@@ -226,21 +226,35 @@
       visibility: visible;
     }
 
-    /* 🔹 Forzar vista escritorio en móvil */
-    @media (max-width: 900px) {
-      html, body {
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
+/* 🔹 Escala móvil: mantener diseño escritorio */
+    @media (max-width: 1024px) {
+      section iframe {
+        transform: scale(0.85);
+        width: 118%;
+        height: 118%;
       }
-      .dashboard {
-        flex-direction: row;
-        transform: scale(0.9);
-        transform-origin: top left;
-        overflow-x: auto;
+    }
+
+    @media (max-width: 768px) {
+      section iframe {
+        transform: scale(0.75);
+        width: 135%;
+        height: 135%;
       }
       .sidebar {
-        min-width: 220px;
+        width: 160px;
+      }
+      .buttons button {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      section iframe {
+        transform: scale(0.65);
+        width: 155%;
+        height: 155%;
       }
     }
   </style>
@@ -490,3 +504,4 @@
   </script>
 </body>
 </html>
+
