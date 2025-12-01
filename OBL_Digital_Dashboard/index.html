@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OBL Digital — Control Global</title>
-  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="icon" type="image/png" href="logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -138,7 +138,6 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
     .topbar {
@@ -172,11 +171,25 @@
       background-color: #f0d97b;
     }
 
+    .right-button button {
+      background-color: #D4AF37;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .right-button button:hover {
+      background-color: #f0d97b;
+    }
+
     section {
       flex: 1;
       display: none;
       height: calc(100vh - 60px);
-      overflow: hidden;
     }
 
     section.active {
@@ -187,38 +200,47 @@
       width: 100%;
       height: 100%;
       border: none;
-      transform-origin: top left;
     }
 
-    /* 🔹 Escala móvil: mantener diseño escritorio */
-    @media (max-width: 1024px) {
-      section iframe {
-        transform: scale(0.85);
-        width: 118%;
-        height: 118%;
+    #logout-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0d0d0d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #D4AF37;
+      font-size: 24px;
+      letter-spacing: 2px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      z-index: 9999;
+    }
+
+    #logout-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* 🔹 Forzar vista escritorio en móvil */
+    @media (max-width: 900px) {
+      html, body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
       }
-    }
-
-    @media (max-width: 768px) {
-      section iframe {
-        transform: scale(0.75);
-        width: 135%;
-        height: 135%;
+      .dashboard {
+        flex-direction: row;
+        transform: scale(0.9);
+        transform-origin: top left;
+        overflow-x: auto;
       }
       .sidebar {
-        width: 160px;
-      }
-      .buttons button {
-        font-size: 12px;
-        padding: 6px 10px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      section iframe {
-        transform: scale(0.65);
-        width: 155%;
-        height: 155%;
+        min-width: 220px;
       }
     }
   </style>
@@ -260,21 +282,52 @@
       </div>
 
       <section id="dep_ftd_dashboard" class="active">
-        <iframe src="https://obldigital-dashboard-2.onrender.com"></iframe>
+        <iframe src="https://obldigital-dashboard-2.onrender.com/"></iframe>
       </section>
 
       <section id="dep_rtn_dashboard">
-        <iframe id="iframe_rtn" src="https://obldigital-dashboard.onrender.com"></iframe>
+        <iframe
+          id="iframe_rtn"
+          src="https://obldigital-dashboard.onrender.com/"
+          onload="ajustarDashboardRTN()">
+        </iframe>
       </section>
 
       <section id="general_ltv_dashboard">
-        <iframe src="https://obldigital-dashboard-3.onrender.com"></iframe>
+        <iframe src="https://obldigital-dashboard-3.onrender.com/"></iframe>
       </section>
     </div>
   </div>
 
+  <div id="logout-overlay">Cerrando sesión...</div>
+
+  <!-- Siguen cargadas las librerías que ya tenías -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.10.0/pptxgen.bundle.js"></script>
+
   <script>
-    // === LOGIN & ROLES ===
+    // 🔹 Función exclusiva para corregir el render del dashboard RTN al cargar
+    function ajustarDashboardRTN() {
+      const iframe = document.getElementById("iframe_rtn");
+      if (!iframe) return;
+
+      // Si ya se re-cargó una vez, no volver a hacerlo (evita bucle infinito)
+      if (iframe.dataset.reloaded === "1") {
+        return;
+      }
+      iframe.dataset.reloaded = "1";
+
+      // Forzar un solo re-render para corregir gráficos cortados
+      setTimeout(() => {
+        const src = iframe.src;
+        iframe.src = "";          // limpiar temporalmente
+        setTimeout(() => {
+          iframe.src = src;       // volver a cargar una sola vez
+        }, 300);
+      }, 800); // da tiempo a que Dash cargue internamente
+    }
+
     const users = {
       "ADMIN@DASHBOARD.NEX": { password: "ADMIN32100", role: "all" },
       "LEADERSFTD@DASHBOARD.NEX": { password: "FTD32100", role: "ftd" },
@@ -283,36 +336,50 @@
     };
 
     function login() {
-      const user = document.getElementById("username").value.trim().toUpperCase();
+      const userInput = document.getElementById("username").value.trim();
       const pass = document.getElementById("password").value.trim();
       const error = document.getElementById("error-msg");
+      const user = userInput.toUpperCase();
 
       if (users[user] && users[user].password === pass) {
         localStorage.setItem("user", user);
         showDashboard();
-      } else error.innerText = "Usuario o contraseña incorrectos.";
+      } else {
+        error.innerText = "Usuario o contraseña incorrectos.";
+      }
     }
 
     function logout() {
-      localStorage.clear();
-      location.reload();
+      const overlay = document.getElementById("logout-overlay");
+      overlay.classList.add("active");
+      setTimeout(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+        document.querySelectorAll("iframe").forEach(f => f.src = "about:blank");
+        overlay.classList.remove("active");
+        window.location.reload();
+      }, 800);
     }
 
     function showDashboard() {
       const user = localStorage.getItem("user");
-      if (!user || !users[user]) return logout();
+      if (!user || !users[user]) {
+        logout();
+        return;
+      }
 
       document.getElementById("login-container").classList.add("hidden");
       document.getElementById("dashboard-container").classList.remove("hidden");
 
       const role = users[user].role;
+
       const menuItems = {
         ftd: document.querySelector("li[onclick*='dep_ftd_dashboard']"),
         rtn: document.querySelector("li[onclick*='dep_rtn_dashboard']"),
         ltv: document.querySelector("li[onclick*='general_ltv_dashboard']")
       };
 
-      Object.values(menuItems).forEach(i => i.style.display = "none");
+      Object.values(menuItems).forEach(item => item.style.display = "none");
       document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
 
       if (role === "ftd") {
@@ -325,25 +392,100 @@
         menuItems.ltv.style.display = "block";
         document.getElementById("general_ltv_dashboard").classList.add("active");
       } else {
-        Object.values(menuItems).forEach(i => i.style.display = "block");
+        Object.values(menuItems).forEach(item => item.style.display = "block");
         document.getElementById("dep_ftd_dashboard").classList.add("active");
       }
     }
 
     function mostrarSeccion(id) {
-      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      const section = document.getElementById(id);
+      section.classList.add("active");
+
+      // 🔹 Forzar redibujo del iframe al hacerlo visible (corrige gráficos cortados)
+      const iframe = section.querySelector("iframe");
+      if (iframe) {
+        const src = iframe.src;
+        iframe.src = ""; // limpiar temporalmente
+        setTimeout(() => {
+          iframe.src = src; // recargar para forzar re-render de Dash
+        }, 300);
+      }
     }
 
-    // === CAPTURA DEL IFRAME DESDE EL DASHBOARD ===
-    document.getElementById("pdfBtn").addEventListener("click", () => {
-      const iframe = document.querySelector("section.active iframe");
-      if (iframe) iframe.contentWindow.postMessage({ action: "capture_dashboard", type: "pdf" }, "*");
+    // === INDICADOR DE PROCESO ===
+    const loadingOverlay = document.createElement("div");
+    loadingOverlay.id = "loadingOverlay";
+    loadingOverlay.style.position = "fixed";
+    loadingOverlay.style.top = 0;
+    loadingOverlay.style.left = 0;
+    loadingOverlay.style.width = "100%";
+    loadingOverlay.style.height = "100%";
+    loadingOverlay.style.background = "rgba(0,0,0,0.8)";
+    loadingOverlay.style.color = "#D4AF37";
+    loadingOverlay.style.fontSize = "22px";
+    loadingOverlay.style.fontWeight = "600";
+    loadingOverlay.style.display = "flex";
+    loadingOverlay.style.alignItems = "center";
+    loadingOverlay.style.justifyContent = "center";
+    loadingOverlay.style.zIndex = "99999";
+    loadingOverlay.style.visibility = "hidden";
+    loadingOverlay.innerText = "⏳ Capturando dashboard completo...";
+    document.body.appendChild(loadingOverlay);
+
+    // 🔹 NUEVO: pedir captura al iframe activo (PDF o PPT)
+    function pedirCapturaAlIframe(tipo) {
+      const sectionActiva = document.querySelector("section.active");
+      if (!sectionActiva) {
+        alert("⚠️ No hay dashboard activo.");
+        return;
+      }
+
+      const iframe = sectionActiva.querySelector("iframe");
+      if (!iframe) {
+        alert("⚠️ No se encontró el iframe del dashboard.");
+        return;
+      }
+
+      // Mostrar overlay "capturando"
+      loadingOverlay.style.visibility = "visible";
+
+      // Enviar mensaje al iframe para que ÉL haga la captura
+      iframe.contentWindow.postMessage(
+        { action: "capture_dashboard", type: tipo },
+        "*"
+      );
+
+      // Seguridad: ocultar overlay si no responde en 20s
+      setTimeout(() => {
+        loadingOverlay.style.visibility = "hidden";
+      }, 20000);
+    }
+
+    // === EXPORTAR A PDF (pide al iframe que genere el PDF) ===
+    function exportarPDF() {
+      pedirCapturaAlIframe("pdf");
+    }
+
+    // === EXPORTAR A POWERPOINT (pide al iframe que genere el PPTX) ===
+    function exportarPPT() {
+      pedirCapturaAlIframe("ppt");
+    }
+
+    // === EVENTOS DE BOTONES (SEGURO Y COMPATIBLE) ===
+    document.addEventListener("DOMContentLoaded", () => {
+      const pdfBtn = document.getElementById("pdfBtn");
+      const pptBtn = document.getElementById("pptBtn");
+
+      if (pdfBtn) pdfBtn.addEventListener("click", exportarPDF);
+      if (pptBtn) pptBtn.addEventListener("click", exportarPPT);
     });
 
-    document.getElementById("pptBtn").addEventListener("click", () => {
-      const iframe = document.querySelector("section.active iframe");
-      if (iframe) iframe.contentWindow.postMessage({ action: "capture_dashboard", type: "ppt" }, "*");
+    // (Opcional) Si el iframe nos avisa que terminó, ocultamos overlay:
+    window.addEventListener("message", (event) => {
+      if (event.data && event.data.action === "capture_done") {
+        loadingOverlay.style.visibility = "hidden";
+      }
     });
   </script>
 </body>
