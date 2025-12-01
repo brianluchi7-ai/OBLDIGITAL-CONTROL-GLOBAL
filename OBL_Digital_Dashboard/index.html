@@ -154,12 +154,7 @@
       gap: 10px;
     }
 
-    /* === BOTONES === */
-    .buttons {
-      display: flex;
-      gap: 8px;
-    }
-
+    /* === BOTÓN PDF === */
     .buttons button {
       background-color: #D4AF37;
       border: none;
@@ -207,13 +202,11 @@
       border: none;
     }
 
-    /* === OVERLAY CIERRE === */
+    /* === OVERLAY === */
     #logout-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background-color: #0d0d0d;
       display: flex;
       align-items: center;
@@ -230,43 +223,6 @@
     #logout-overlay.active {
       opacity: 1;
       visibility: visible;
-    }
-
-    /* === ESCALA MÓVIL === */
-    @media (max-width: 1024px) {
-      section iframe {
-        transform: scale(0.95);
-        transform-origin: top left;
-        width: 105%;
-        height: 105%;
-      }
-    }
-
-    @media (max-width: 768px) {
-      section iframe {
-        transform: scale(0.85);
-        transform-origin: top left;
-        width: 118%;
-        height: 118%;
-      }
-
-      .sidebar {
-        width: 160px;
-      }
-
-      .buttons button {
-        font-size: 12px;
-        padding: 6px 10px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      section iframe {
-        transform: scale(0.75);
-        transform-origin: top left;
-        width: 130%;
-        height: 130%;
-      }
     }
   </style>
 </head>
@@ -298,8 +254,7 @@
     <div class="main">
       <div class="topbar">
         <div class="buttons">
-          <button id="pdfBtn">📄 PDF</button>
-          <button id="pptBtn">📈 PowerPoint</button>
+          <button id="pdfBtn">📄 Exportar PDF</button>
         </div>
         <div class="right-button">
           <button onclick="logout()">🚪 Log Out</button>
@@ -311,7 +266,7 @@
       </section>
 
       <section id="dep_rtn_dashboard">
-        <iframe id="iframe_rtn" src="https://obldigital-dashboard.onrender.com/" onload="ajustarDashboardRTN()"></iframe>
+        <iframe id="iframe_rtn" src="https://obldigital-dashboard.onrender.com/"></iframe>
       </section>
 
       <section id="general_ltv_dashboard">
@@ -322,25 +277,10 @@
 
   <div id="logout-overlay">Cerrando sesión...</div>
 
-  <!-- === LIBRERÍAS === -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.10.0/pptxgen.bundle.js"></script>
 
-  <!-- === SCRIPT PRINCIPAL === -->
   <script>
-    function ajustarDashboardRTN() {
-      const iframe = document.getElementById("iframe_rtn");
-      if (!iframe) return;
-      if (iframe.dataset.reloaded === "1") return;
-      iframe.dataset.reloaded = "1";
-      setTimeout(() => {
-        const src = iframe.src;
-        iframe.src = "";
-        setTimeout(() => { iframe.src = src; }, 300);
-      }, 800);
-    }
-
     const users = {
       "ADMIN@DASHBOARD.NEX": { password: "ADMIN32100", role: "all" },
       "LEADERSFTD@DASHBOARD.NEX": { password: "FTD32100", role: "ftd" },
@@ -375,40 +315,26 @@
     function showDashboard() {
       const user = localStorage.getItem("user");
       if (!user || !users[user]) return logout();
-
       document.getElementById("login-container").classList.add("hidden");
       document.getElementById("dashboard-container").classList.remove("hidden");
-
       const role = users[user].role;
-      const menuItems = {
+      const sections = {
         ftd: document.querySelector("li[onclick*='dep_ftd_dashboard']"),
         rtn: document.querySelector("li[onclick*='dep_rtn_dashboard']"),
         ltv: document.querySelector("li[onclick*='general_ltv_dashboard']")
       };
-
-      Object.values(menuItems).forEach(i => i.style.display = "none");
+      Object.values(sections).forEach(i => i.style.display = "none");
       document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-
-      if (role === "ftd") {
-        menuItems.ftd.style.display = "block";
-        document.getElementById("dep_ftd_dashboard").classList.add("active");
-      } else if (role === "rtn") {
-        menuItems.rtn.style.display = "block";
-        document.getElementById("dep_rtn_dashboard").classList.add("active");
-      } else if (role === "ltv") {
-        menuItems.ltv.style.display = "block";
-        document.getElementById("general_ltv_dashboard").classList.add("active");
-      } else {
-        Object.values(menuItems).forEach(i => i.style.display = "block");
-        document.getElementById("dep_ftd_dashboard").classList.add("active");
-      }
+      if (role === "ftd") { sections.ftd.style.display = "block"; document.getElementById("dep_ftd_dashboard").classList.add("active"); }
+      else if (role === "rtn") { sections.rtn.style.display = "block"; document.getElementById("dep_rtn_dashboard").classList.add("active"); }
+      else if (role === "ltv") { sections.ltv.style.display = "block"; document.getElementById("general_ltv_dashboard").classList.add("active"); }
+      else { Object.values(sections).forEach(i => i.style.display = "block"); document.getElementById("dep_ftd_dashboard").classList.add("active"); }
     }
 
     function mostrarSeccion(id) {
       document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
       const s = document.getElementById(id);
       s.classList.add("active");
-
       const iframe = s.querySelector("iframe");
       if (iframe) {
         const src = iframe.src;
@@ -417,67 +343,35 @@
       }
     }
 
-    /* === OVERLAY DE CAPTURA === */
-    const loadingOverlay = document.createElement("div");
-    Object.assign(loadingOverlay.style, {
+    const overlay = document.createElement("div");
+    Object.assign(overlay.style, {
       position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
-      background: "rgba(0,0,0,0.8)", color: "#D4AF37", fontSize: "22px",
+      background: "rgba(0,0,0,0.85)", color: "#D4AF37", fontSize: "22px",
       fontWeight: "600", display: "flex", alignItems: "center",
-      justifyContent: "center", zIndex: "99999", visibility: "hidden"
+      justifyContent: "center", zIndex: "9999", visibility: "hidden"
     });
-    loadingOverlay.innerText = "⏳ Capturando dashboard completo...";
-    document.body.appendChild(loadingOverlay);
+    overlay.innerText = "⏳ Generando PDF...";
+    document.body.appendChild(overlay);
 
-    function pedirCapturaAlIframe(tipo) {
-      const sectionActiva = document.querySelector("section.active");
+    document.getElementById("pdfBtn").addEventListener("click", () => {
+      const sectionActiva = document.querySelector("section.active iframe");
       if (!sectionActiva) return alert("⚠️ No hay dashboard activo.");
-
-      const iframe = sectionActiva.querySelector("iframe");
-      if (!iframe) return alert("⚠️ No se encontró el iframe del dashboard.");
-
-      loadingOverlay.style.visibility = "visible";
-      iframe.contentWindow.postMessage({ action: "capture_dashboard", type: tipo }, "*");
-
-      setTimeout(() => loadingOverlay.style.visibility = "hidden", 20000);
-    }
-
-    function exportarPDF() { pedirCapturaAlIframe("pdf"); }
-    function exportarPPT() { pedirCapturaAlIframe("ppt"); }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("pdfBtn").addEventListener("click", exportarPDF);
-      document.getElementById("pptBtn").addEventListener("click", exportarPPT);
+      overlay.style.visibility = "visible";
+      sectionActiva.contentWindow.postMessage({ action: "capture_dashboard", type: "pdf" }, "*");
     });
 
-    /* === RECEPCIÓN DE CAPTURA === */
-    window.addEventListener("message", async (event) => {
-      if (!event.data) return;
-
-      if (event.data.action === "capture_image") {
-        const imgData = event.data.img;
-        const type = event.data.filetype;
-
-        if (type === "pdf") {
-          const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF("l", "pt", "a4");
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const imgWidth = pageWidth - 20;
-          const imgHeight = (1080 * imgWidth) / 1920;
-          pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
-          pdf.save("OBL_Digital_Dashboard_Completo.pdf");
-        }
-
-        if (type === "ppt") {
-          const pptx = new PptxGenJS();
-          const slide = pptx.addSlide();
-          slide.addImage({ data: imgData, x: 0.3, y: 0.3, w: 9.3, h: 5.5 });
-          slide.addText("OBL Digital — Captura completa del Dashboard", { x: 0.3, y: 6, fontSize: 14, color: "363636" });
-          pptx.writeFile({ fileName: "OBL_Digital_Dashboard_Completo.pptx" });
-        }
-
-        loadingOverlay.style.visibility = "hidden";
-      }
+    window.addEventListener("message", (event) => {
+      if (!event.data || event.data.action !== "capture_image") return;
+      const { jsPDF } = window.jspdf;
+      const imgData = event.data.img;
+      const pdf = new jsPDF("l", "pt", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
+      pdf.save("OBL_Digital_Dashboard.pdf");
+      overlay.style.visibility = "hidden";
     });
   </script>
 </body>
 </html>
+
