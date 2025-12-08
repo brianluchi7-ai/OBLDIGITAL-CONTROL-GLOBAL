@@ -229,13 +229,28 @@
 
 <body>
   <!-- === LOGIN === -->
-  <div id="login-container" class="login-container">
-    <img src="assets/logo.png" alt="OBL Digital" />
-    <input type="text" id="username" placeholder="Usuario o correo" />
-    <input type="password" id="password" placeholder="Contraseña" />
-    <button onclick="login()">Iniciar sesión</button>
-    <p id="error-msg"></p>
-  </div>
+<div id="login-container" class="login-container">
+  <img src="assets/logo.png" alt="OBL Digital PGY" />
+  <input type="text" id="username" placeholder="Usuario o correo" />
+  <input type="password" id="password" placeholder="Contraseña" />
+  <button onclick="login()">Iniciar sesión</button>
+  <p id="error-msg"></p>
+</div>
+
+<script>
+  // Detectar tecla Enter en los inputs
+  document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll("#username, #password");
+    inputs.forEach(input => {
+      input.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault(); // evita el submit por defecto
+          login(); // ejecuta la función de login
+        }
+      });
+    });
+  });
+</script>
 
   <!-- === DASHBOARD === -->
   <div id="dashboard-container" class="dashboard hidden">
@@ -374,5 +389,6 @@
   </script>
 </body>
 </html>
+
 
 
