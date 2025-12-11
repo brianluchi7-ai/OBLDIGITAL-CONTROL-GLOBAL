@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OBL Digital — Control Global</title>
+  <title>OBL Digital — Control Global MEX</title>
   <link rel="icon" type="image/png" href="logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* === GENERAL === */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
@@ -18,7 +17,6 @@
       overflow: hidden;
     }
 
-    /* === LOGIN === */
     .login-container {
       display: flex;
       flex-direction: column;
@@ -71,22 +69,10 @@
       background-color: #f0d97b;
     }
 
-    #error-msg {
-      color: #ff4d4d;
-      font-weight: bold;
-      margin-top: 10px;
-    }
+    #error-msg { color: #ff4d4d; font-weight: bold; margin-top: 10px; }
+    .hidden { display: none; }
 
-    .hidden {
-      display: none;
-    }
-
-    /* === DASHBOARD === */
-    .dashboard {
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
+    .dashboard { display: flex; height: 100vh; overflow: hidden; }
 
     .sidebar {
       width: 220px;
@@ -112,36 +98,22 @@
       box-shadow: 0 0 40px rgba(212,175,55,0.9);
     }
 
-    .sidebar h2 {
-      color: #D4AF37;
-      margin-top: 10px;
-    }
+    .sidebar h2 { color: #D4AF37; margin-top: 10px; }
 
-    .menu {
-      list-style: none;
-      padding: 0;
-      width: 100%;
-    }
-
+    .menu { list-style: none; padding: 0; width: 100%; }
     .menu li {
       padding: 12px 20px;
       cursor: pointer;
       color: #f2f2f2;
       transition: 0.3s;
     }
-
-    .menu li:hover,
-    .menu li.active {
+    .menu li:hover, .menu li.active {
       background-color: #D4AF37;
       color: #000;
       font-weight: bold;
     }
 
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+    .main { flex: 1; display: flex; flex-direction: column; }
 
     .topbar {
       height: 60px;
@@ -154,8 +126,7 @@
       gap: 10px;
     }
 
-    /* === BOTÓN PDF === */
-    .buttons button {
+    .buttons button, .right-button button {
       background-color: #D4AF37;
       border: none;
       color: #000;
@@ -166,91 +137,38 @@
       transition: 0.3s;
     }
 
-    .buttons button:hover {
+    .buttons button:hover, .right-button button:hover {
       background-color: #f0d97b;
     }
 
-    .right-button button {
-      background-color: #D4AF37;
-      border: none;
-      color: #000;
-      font-weight: bold;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+    section { flex: 1; display: none; height: calc(100vh - 60px); }
+    section.active { display: block; }
+    section iframe { width: 100%; height: 100%; border: none; }
 
-    .right-button button:hover {
-      background-color: #f0d97b;
-    }
-
-    /* === SECCIONES === */
-    section {
-      flex: 1;
-      display: none;
-      height: calc(100vh - 60px);
-    }
-
-    section.active {
-      display: block;
-    }
-
-    section iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* === OVERLAY === */
     #logout-overlay {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
       background-color: #0d0d0d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #D4AF37;
-      font-size: 24px;
-      letter-spacing: 2px;
-      opacity: 0;
-      visibility: hidden;
+      display: flex; align-items: center; justify-content: center;
+      color: #D4AF37; font-size: 24px; letter-spacing: 2px;
+      opacity: 0; visibility: hidden;
       transition: opacity 0.3s ease;
       z-index: 9999;
     }
 
-    #logout-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+    #logout-overlay.active { opacity: 1; visibility: visible; }
   </style>
 </head>
 
 <body>
   <!-- === LOGIN === -->
-<div id="login-container" class="login-container">
-  <img src="assets/logo.png" alt="OBL Digital PGY" />
-  <input type="text" id="username" placeholder="Usuario o correo" />
-  <input type="password" id="password" placeholder="Contraseña" />
-  <button onclick="login()">Iniciar sesión</button>
-  <p id="error-msg"></p>
-</div>
-
-<script>
-  // Detectar tecla Enter en los inputs
-  document.addEventListener("DOMContentLoaded", () => {
-    const inputs = document.querySelectorAll("#username, #password");
-    inputs.forEach(input => {
-      input.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-          event.preventDefault(); // evita el submit por defecto
-          login(); // ejecuta la función de login
-        }
-      });
-    });
-  });
-</script>
+  <div id="login-container" class="login-container">
+    <img src="assets/logo.png" alt="OBL Digital" />
+    <input type="text" id="username" placeholder="Usuario o correo" />
+    <input type="password" id="password" placeholder="Contraseña" />
+    <button onclick="login()">Iniciar sesión</button>
+    <p id="error-msg"></p>
+  </div>
 
   <!-- === DASHBOARD === -->
   <div id="dashboard-container" class="dashboard hidden">
@@ -258,22 +176,19 @@
       <div class="logo">
         <img src="assets/logo.png" alt="OBL Digital" />
       </div>
-      <h2>Control Global</h2>
+      <h2>Control Global MEX</h2>
       <ul class="menu">
         <li onclick="mostrarSeccion('dep_ftd_dashboard')">📊 DEP FTD Dashboard</li>
         <li onclick="mostrarSeccion('dep_rtn_dashboard')">📈 DEP RTN Dashboard</li>
         <li onclick="mostrarSeccion('general_ltv_dashboard')">💹 GENERAL LTV Dashboard</li>
+        <li onclick="mostrarSeccion('comisiones_dashboard')">💰 COMISIONES Dashboard</li>
       </ul>
     </div>
 
     <div class="main">
       <div class="topbar">
-        <div class="buttons">
-          <button id="pdfBtn">📄 PDF</button>
-        </div>
-        <div class="right-button">
-          <button onclick="logout()">🚪 Log Out</button>
-        </div>
+        <div class="buttons"><button id="pdfBtn">📄 PDF</button></div>
+        <div class="right-button"><button onclick="logout()">🚪 Log Out</button></div>
       </div>
 
       <section id="dep_ftd_dashboard" class="active">
@@ -281,26 +196,31 @@
       </section>
 
       <section id="dep_rtn_dashboard">
-        <iframe id="iframe_rtn" src="https://obldigital-dashboard.onrender.com/"></iframe>
+        <iframe src="https://obldigital-dashboard.onrender.com/"></iframe>
       </section>
 
       <section id="general_ltv_dashboard">
         <iframe src="https://obldigital-dashboard-3.onrender.com/"></iframe>
+      </section>
+
+      <section id="comisiones_dashboard">
+        <iframe src="https://comisiones-mx.onrender.com"></iframe>
       </section>
     </div>
   </div>
 
   <div id="logout-overlay">Cerrando sesión...</div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
     const users = {
       "ADMIN@DASHBOARD.NEX": { password: "ADMIN32100", role: "all" },
       "LEADERSFTD@DASHBOARD.NEX": { password: "FTD32100", role: "ftd" },
       "LEADERSRTN@DASHBOARD.NEX": { password: "RTN32100", role: "rtn" },
-      "LEADERLTV@DASHBOARD.NEX": { password: "LTV32100", role: "ltv" }
+      "LEADERLTV@DASHBOARD.NEX": { password: "LTV32100", role: "ltv" },
+      "COMISIONES@DASHBOARD.NEX": { password: "COM32100", role: "com" }
     };
 
     function login() {
@@ -332,17 +252,22 @@
       if (!user || !users[user]) return logout();
       document.getElementById("login-container").classList.add("hidden");
       document.getElementById("dashboard-container").classList.remove("hidden");
+
       const role = users[user].role;
       const sections = {
         ftd: document.querySelector("li[onclick*='dep_ftd_dashboard']"),
         rtn: document.querySelector("li[onclick*='dep_rtn_dashboard']"),
-        ltv: document.querySelector("li[onclick*='general_ltv_dashboard']")
+        ltv: document.querySelector("li[onclick*='general_ltv_dashboard']"),
+        com: document.querySelector("li[onclick*='comisiones_dashboard']")
       };
+
       Object.values(sections).forEach(i => i.style.display = "none");
       document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+
       if (role === "ftd") { sections.ftd.style.display = "block"; document.getElementById("dep_ftd_dashboard").classList.add("active"); }
       else if (role === "rtn") { sections.rtn.style.display = "block"; document.getElementById("dep_rtn_dashboard").classList.add("active"); }
       else if (role === "ltv") { sections.ltv.style.display = "block"; document.getElementById("general_ltv_dashboard").classList.add("active"); }
+      else if (role === "com") { sections.com.style.display = "block"; document.getElementById("comisiones_dashboard").classList.add("active"); }
       else { Object.values(sections).forEach(i => i.style.display = "block"); document.getElementById("dep_ftd_dashboard").classList.add("active"); }
     }
 
@@ -386,9 +311,16 @@
       pdf.save("OBL_Digital_Dashboard.pdf");
       overlay.style.visibility = "hidden";
     });
+
+    // tecla Enter en login
+    document.addEventListener("DOMContentLoaded", () => {
+      const inputs = document.querySelectorAll("#username, #password");
+      inputs.forEach(input => {
+        input.addEventListener("keypress", function (event) {
+          if (event.key === "Enter") { event.preventDefault(); login(); }
+        });
+      });
+    });
   </script>
 </body>
 </html>
-
-
-
