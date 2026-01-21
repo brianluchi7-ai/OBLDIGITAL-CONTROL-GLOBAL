@@ -16,6 +16,7 @@
       height: 100vh;
       overflow: hidden;
     }
+
     .login-container {
       display: flex;
       flex-direction: column;
@@ -24,6 +25,7 @@
       height: 100vh;
       padding: 20px;
     }
+
     .login-container img {
       width: 130px;
       height: 130px;
@@ -32,7 +34,14 @@
       box-shadow: 0 0 25px rgba(255, 170, 0, 0.7);
       transition: 0.4s ease;
     }
+
+    .login-container img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 45px rgba(255, 200, 60, 0.9);
+    }
+
     .login-container input {
+      display: block;
       width: 260px;
       margin: 8px 0;
       padding: 10px;
@@ -41,7 +50,9 @@
       background-color: #1a1a1a;
       color: #fff;
       text-align: center;
+      outline: none;
     }
+
     .login-container button {
       background-color: #D4AF37;
       color: #000;
@@ -51,10 +62,18 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 10px;
+      transition: 0.3s;
     }
+
+    .login-container button:hover {
+      background-color: #f0d97b;
+    }
+
+    #error-msg { color: #ff4d4d; font-weight: bold; margin-top: 10px; }
     .hidden { display: none; }
 
-    .dashboard { display: flex; height: 100vh; }
+    .dashboard { display: flex; height: 100vh; overflow: hidden; }
+
     .sidebar {
       width: 220px;
       background-color: #141414;
@@ -63,12 +82,17 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      flex-shrink: 0;
     }
+
+    .sidebar h2 { color: #D4AF37; margin-top: 10px; }
+
     .menu { list-style: none; padding: 0; width: 100%; }
     .menu li {
       padding: 12px 20px;
       cursor: pointer;
       color: #f2f2f2;
+      transition: 0.3s;
     }
     .menu li:hover {
       background-color: #D4AF37;
@@ -77,55 +101,58 @@
     }
 
     .main { flex: 1; display: flex; flex-direction: column; }
+
     .topbar {
       height: 60px;
       background-color: #141414;
       border-bottom: 2px solid #D4AF37;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: 0 20px;
     }
+
     section { flex: 1; display: none; }
     section.active { display: block; }
-    iframe { width: 100%; height: 100%; border: none; }
+    section iframe { width: 100%; height: 100%; border: none; }
 
     #logout-overlay {
       position: fixed;
       inset: 0;
-      background: #0d0d0d;
-      color: #D4AF37;
+      background-color: #0d0d0d;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #D4AF37;
       font-size: 24px;
+      opacity: 0;
       visibility: hidden;
+      transition: 0.3s;
       z-index: 9999;
     }
-    #logout-overlay.active { visibility: visible; }
+    #logout-overlay.active { opacity: 1; visibility: visible; }
   </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="login-container" class="login-container">
-  <img src="assets/logo.png">
-  <input id="username" placeholder="Usuario">
-  <input id="password" type="password" placeholder="Contraseña">
-  <button onclick="login()">Ingresar</button>
+  <img src="assets/logo.png" />
+  <input id="username" placeholder="Usuario o correo" />
+  <input id="password" type="password" placeholder="Contraseña" />
+  <button onclick="login()">Iniciar sesión</button>
   <p id="error-msg"></p>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard-container" class="dashboard hidden">
   <div class="sidebar">
+    <h2>Control Global</h2>
     <ul class="menu">
-      <li onclick="mostrarSeccion('dep_ftd_dashboard')">📊 DEP FTD</li>
-      <li onclick="mostrarSeccion('dep_rtn_dashboard')">📈 DEP RTN</li>
-      <li onclick="mostrarSeccion('general_ltv_dashboard')">💹 LTV</li>
-      <li onclick="mostrarSeccion('general_ltvrtn_dashboard')">💹 LTV RTN</li>
-      <li onclick="mostrarSeccion('comisiones_dashboard')">💰 COMISIONES</li>
+      <li onclick="mostrarSeccion('dep_ftd_dashboard')">📊 DEP FTD Dashboard</li>
+      <li onclick="mostrarSeccion('dep_rtn_dashboard')">📈 DEP RTN Dashboard</li>
+      <li onclick="mostrarSeccion('general_ltv_dashboard')">💹 GENERAL LTV Dashboard</li>
+      <li onclick="mostrarSeccion('general_ltvrtn_dashboard')">💹 RTN LTV Dashboard</li>
+      <li onclick="mostrarSeccion('comisiones_dashboard')">💰 COMISIONES Dashboard</li>
     </ul>
   </div>
 
@@ -135,17 +162,30 @@
       <button onclick="logout()">🚪 Log Out</button>
     </div>
 
-    <section id="dep_ftd_dashboard"><iframe src="https://obldigital-dashboard-2.onrender.com/"></iframe></section>
-    <section id="dep_rtn_dashboard"><iframe src="https://obldigital-dashboard.onrender.com/"></iframe></section>
-    <section id="general_ltv_dashboard"><iframe src="https://obldigital-dashboard-3.onrender.com/"></iframe></section>
-    <section id="general_ltvrtn_dashboard"><iframe src="https://obldigitalltv-pt-2.onrender.com/"></iframe></section>
-    <section id="comisiones_dashboard"><iframe src="https://comisiones-mx.onrender.com"></iframe></section>
+    <section id="dep_ftd_dashboard" class="active">
+      <iframe src="https://obldigital-dashboard-2.onrender.com/"></iframe>
+    </section>
+
+    <section id="dep_rtn_dashboard">
+      <iframe src="https://obldigital-dashboard.onrender.com/"></iframe>
+    </section>
+
+    <section id="general_ltv_dashboard">
+      <iframe src="https://obldigital-dashboard-3.onrender.com/"></iframe>
+    </section>
+
+    <section id="general_ltvrtn_dashboard">
+      <iframe src="https://obldigitalltv-pt-2.onrender.com/"></iframe>
+    </section>
+
+    <section id="comisiones_dashboard">
+      <iframe src="https://comisiones-mx.onrender.com"></iframe>
+    </section>
   </div>
 </div>
 
 <div id="logout-overlay">Cerrando sesión...</div>
 
-<!-- PDF LIBS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -159,54 +199,85 @@ const users = {
 };
 
 function login() {
-  const u = username.value.trim().toUpperCase();
-  const p = password.value.trim();
+  const u = document.getElementById("username").value.trim().toUpperCase();
+  const p = document.getElementById("password").value.trim();
+  const err = document.getElementById("error-msg");
   if (users[u] && users[u].password === p) {
     localStorage.setItem("user", u);
     showDashboard();
-  } else error-msg.innerText = "Credenciales incorrectas";
+  } else {
+    err.innerText = "Usuario o contraseña incorrectos.";
+  }
 }
 
 function logout() {
-  document.getElementById("logout-overlay").classList.add("active");
+  const overlay = document.getElementById("logout-overlay");
+  overlay.classList.add("active");
   setTimeout(() => {
     localStorage.clear();
-    location.reload();
+    window.location.reload();
   }, 800);
 }
 
 function showDashboard() {
-  const role = users[localStorage.getItem("user")].role;
-  login-container.classList.add("hidden");
-  dashboard-container.classList.remove("hidden");
+  const user = localStorage.getItem("user");
+  if (!user || !users[user]) return logout();
 
-  const items = {
-    ftd: dep_ftd_dashboard,
-    rtn: dep_rtn_dashboard,
-    ltv: general_ltv_dashboard,
-    ltvrtn: general_ltvrtn_dashboard,
-    com: comisiones_dashboard
+  document.getElementById("login-container").classList.add("hidden");
+  document.getElementById("dashboard-container").classList.remove("hidden");
+
+  const role = users[user].role;
+
+  const menu = {
+    ftd: document.querySelector("li[onclick*='dep_ftd_dashboard']"),
+    rtn: document.querySelector("li[onclick*='dep_rtn_dashboard']"),
+    ltv: document.querySelector("li[onclick*='general_ltv_dashboard']"),
+    ltvrtn: document.querySelector("li[onclick*='general_ltvrtn_dashboard']"),
+    com: document.querySelector("li[onclick*='comisiones_dashboard']")
   };
 
-  const access = {
-    ftd: ["ftd", "ltv"],
-    rtn: ["rtn", "ltv", "ltvrtn"],
-    ltv: ["ltv", "ltvrtn"],
-    com: ["com"],
-    all: Object.keys(items)
-  };
-
+  Object.values(menu).forEach(li => li.style.display = "none");
   document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-  access[role].forEach(k => items[k].style.display = "block");
-  items[access[role][0]].classList.add("active");
+
+  if (role === "ftd") {
+    menu.ftd.style.display = "block";
+    menu.ltv.style.display = "block";
+    document.getElementById("dep_ftd_dashboard").classList.add("active");
+  }
+  else if (role === "rtn") {
+    menu.rtn.style.display = "block";
+    menu.ltv.style.display = "block";
+    menu.ltvrtn.style.display = "block";
+    document.getElementById("dep_rtn_dashboard").classList.add("active");
+  }
+  else if (role === "ltv") {
+    menu.ltv.style.display = "block";
+    menu.ltvrtn.style.display = "block";
+    document.getElementById("general_ltv_dashboard").classList.add("active");
+  }
+  else if (role === "com") {
+    menu.com.style.display = "block";
+    document.getElementById("comisiones_dashboard").classList.add("active");
+  }
+  else {
+    Object.values(menu).forEach(li => li.style.display = "block");
+    document.getElementById("dep_ftd_dashboard").classList.add("active");
+  }
 }
 
 function mostrarSeccion(id) {
-  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+  const s = document.getElementById(id);
+  s.classList.add("active");
+  const iframe = s.querySelector("iframe");
+  if (iframe) {
+    const src = iframe.src;
+    iframe.src = "";
+    setTimeout(() => iframe.src = src, 300);
+  }
 }
 
-/* PDF */
+/* PDF (sin tocar) */
 const overlay = document.createElement("div");
 overlay.innerText = "⏳ Generando PDF...";
 Object.assign(overlay.style,{
@@ -216,20 +287,34 @@ Object.assign(overlay.style,{
 });
 document.body.appendChild(overlay);
 
-pdfBtn.onclick = () => {
+document.getElementById("pdfBtn").onclick = () => {
   const iframe = document.querySelector("section.active iframe");
+  if (!iframe) return;
   overlay.style.visibility="visible";
   iframe.contentWindow.postMessage({ action:"capture_dashboard" },"*");
 };
 
 window.addEventListener("message",e=>{
-  if(e.data.action!=="capture_image")return;
+  if(e.data?.action!=="capture_image")return;
   const {jsPDF}=window.jspdf;
   const pdf=new jsPDF("l","pt","a4");
-  pdf.addImage(e.data.img,"PNG",0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
-  pdf.save("OBL_Dashboard.pdf");
+  pdf.addImage(e.data.img,"PNG",0,0,
+    pdf.internal.pageSize.getWidth(),
+    pdf.internal.pageSize.getHeight()
+  );
+  pdf.save("OBL_Digital_Dashboard.pdf");
   overlay.style.visibility="hidden";
 });
+
+ // tecla Enter en login
+  document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll("#username, #password");
+    inputs.forEach(input => {
+      input.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") { event.preventDefault(); login(); }
+      });
+    });
+  });
 </script>
 
 </body>
