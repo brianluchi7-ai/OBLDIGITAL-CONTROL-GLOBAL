@@ -85,6 +85,19 @@
       flex-shrink: 0;
     }
 
+    .sidebar .logo img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(212,175,55,0.6);
+      transition: 0.3s;
+    }
+
+    .sidebar .logo img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 40px rgba(212,175,55,0.9);
+    }
+
     .sidebar h2 { color: #D4AF37; margin-top: 10px; }
 
     .menu { list-style: none; padding: 0; width: 100%; }
@@ -94,7 +107,7 @@
       color: #f2f2f2;
       transition: 0.3s;
     }
-    .menu li:hover {
+    .menu li:hover, .menu li.active {
       background-color: #D4AF37;
       color: #000;
       font-weight: bold;
@@ -110,87 +123,104 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
+      gap: 10px;
     }
 
-    section { flex: 1; display: none; }
+    .buttons button, .right-button button {
+      background-color: #D4AF37;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .buttons button:hover, .right-button button:hover {
+      background-color: #f0d97b;
+    }
+
+    section { flex: 1; display: none; height: calc(100vh - 60px); }
     section.active { display: block; }
     section iframe { width: 100%; height: 100%; border: none; }
 
     #logout-overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
       background-color: #0d0d0d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #D4AF37;
-      font-size: 24px;
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.3s;
+      display: flex; align-items: center; justify-content: center;
+      color: #D4AF37; font-size: 24px; letter-spacing: 2px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s ease;
       z-index: 9999;
     }
+
     #logout-overlay.active { opacity: 1; visibility: visible; }
   </style>
 </head>
 
 <body>
-
-<div id="login-container" class="login-container">
-  <img src="assets/logo.png" />
-  <input id="username" placeholder="Usuario o correo" />
-  <input id="password" type="password" placeholder="Contraseña" />
-  <button onclick="login()">Iniciar sesión</button>
-  <p id="error-msg"></p>
-</div>
-
-<div id="dashboard-container" class="dashboard hidden">
-  <div class="sidebar">
-    <h2>Control Global</h2>
-    <ul class="menu">
-      <li onclick="mostrarSeccion('dep_ftd_dashboard')">📊 DEP FTD Dashboard</li>
-      <li onclick="mostrarSeccion('dep_rtn_dashboard')">📈 DEP RTN Dashboard</li>
-      <li onclick="mostrarSeccion('general_ltv_dashboard')">💹 GENERAL LTV Dashboard</li>
-      <li onclick="mostrarSeccion('general_ltvrtn_dashboard')">💹 RTN LTV Dashboard</li>
-      <li onclick="mostrarSeccion('comisiones_dashboard')">💰 COMISIONES Dashboard</li>
-    </ul>
+  <!-- === LOGIN === -->
+  <div id="login-container" class="login-container">
+    <img src="assets/logo.png" alt="OBL Digital" />
+    <input type="text" id="username" placeholder="Usuario o correo" />
+    <input type="password" id="password" placeholder="Contraseña" />
+    <button onclick="login()">Iniciar sesión</button>
+    <p id="error-msg"></p>
   </div>
 
-  <div class="main">
-    <div class="topbar">
-      <button id="pdfBtn">📄 PDF</button>
-      <button onclick="logout()">🚪 Log Out</button>
+  <!-- === DASHBOARD === -->
+  <div id="dashboard-container" class="dashboard hidden">
+    <div class="sidebar">
+      <div class="logo">
+        <img src="assets/logo.png" alt="OBL Digital" />
+      </div>
+      <h2>Control Global</h2>
+      <ul class="menu">
+        <li onclick="mostrarSeccion('dep_ftd_dashboard')">📊 DEP FTD Dashboard</li>
+        <li onclick="mostrarSeccion('dep_rtn_dashboard')">📈 DEP RTN Dashboard</li>
+        <li onclick="mostrarSeccion('general_ltv_dashboard')">💹 GENERAL LTV Dashboard</li>
+        <li onclick="mostrarSeccion('general_ltvrtn_dashboard')">💹 RTN LTV Dashboard</li>
+        <li onclick="mostrarSeccion('comisiones_dashboard')">💰 COMISIONES Dashboard</li>
+      </ul>
     </div>
 
-    <section id="dep_ftd_dashboard" class="active">
-      <iframe src="https://obldigital-dashboard-2.onrender.com/"></iframe>
-    </section>
+    <div class="main">
+      <div class="topbar">
+        <div class="buttons"><button id="pdfBtn">📄 PDF</button></div>
+        <div class="right-button"><button onclick="logout()">🚪 Log Out</button></div>
+      </div>
 
-    <section id="dep_rtn_dashboard">
-      <iframe src="https://obldigital-dashboard.onrender.com/"></iframe>
-    </section>
+      <section id="dep_ftd_dashboard" class="active">
+        <iframe src="https://obldigital-dashboard-2.onrender.com/"></iframe>
+      </section>
 
-    <section id="general_ltv_dashboard">
-      <iframe src="https://obldigital-dashboard-3.onrender.com/"></iframe>
-    </section>
+      <section id="dep_rtn_dashboard">
+        <iframe src="https://obldigital-dashboard.onrender.com/"></iframe>
+      </section>
 
-    <section id="general_ltvrtn_dashboard">
-      <iframe src="https://obldigitalltv-pt-2.onrender.com/"></iframe>
-    </section>
+      <section id="general_ltv_dashboard">
+        <iframe src="https://obldigital-dashboard-3.onrender.com/"></iframe>
+      </section>
 
-    <section id="comisiones_dashboard">
-      <iframe src="https://comisiones-mx.onrender.com"></iframe>
-    </section>
+      <section id="general_ltvrtn_dashboard">
+        <iframe src="https://obldigitalltv-pt-2.onrender.com/"></iframe>
+      </section>
+
+      <section id="comisiones_dashboard">
+        <iframe src="https://comisiones-mx.onrender.com"></iframe>
+      </section>
+    </div>
   </div>
-</div>
 
-<div id="logout-overlay">Cerrando sesión...</div>
+  <div id="logout-overlay">Cerrando sesión...</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<script>
-const users = {
+  <script>
+   const users = {
   "ADMIN@DASHBOARD.NEX": { password: "ADMIN32100", role: "all" },
   "LEADERSFTD@DASHBOARD.NEX": { password: "FTD32100", role: "ftd" },
   "LEADERSRTN@DASHBOARD.NEX": { password: "RTN32100", role: "rtn" },
@@ -305,17 +335,19 @@ window.addEventListener("message",e=>{
   pdf.save("OBL_Digital_Dashboard.pdf");
   overlay.style.visibility="hidden";
 });
-
- // tecla Enter en login
-  document.addEventListener("DOMContentLoaded", () => {
-    const inputs = document.querySelectorAll("#username, #password");
-    inputs.forEach(input => {
-      input.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") { event.preventDefault(); login(); }
+    // tecla Enter en login
+    document.addEventListener("DOMContentLoaded", () => {
+      const inputs = document.querySelectorAll("#username, #password");
+      inputs.forEach(input => {
+        input.addEventListener("keypress", function (event) {
+          if (event.key === "Enter") { event.preventDefault(); login(); }
+        });
       });
     });
-  });
-</script>
-
+  </script>
 </body>
 </html>
+
+
+
+
