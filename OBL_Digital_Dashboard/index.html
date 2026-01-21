@@ -183,6 +183,7 @@
         <li onclick="mostrarSeccion('general_ltv_dashboard')">💹 GENERAL LTV Dashboard</li>
         <li onclick="mostrarSeccion('general_ltvrtn_dashboard')">💹 RTN LTV Dashboard</li>
         <li onclick="mostrarSeccion('comisiones_dashboard')">💰 COMISIONES Dashboard</li>
+        <li onclick="mostrarSeccion('comisiones_dashboard')">📊 STD Dashboard</li>
       </ul>
     </div>
 
@@ -210,6 +211,10 @@
 
       <section id="comisiones_dashboard">
         <iframe src="https://comisiones-mx.onrender.com"></iframe>
+      </section>
+
+      <section id="std_dashboard">
+        <iframe src="https://obldigital-dashboard-tracking.onrender.com"></iframe>
       </section>
     </div>
   </div>
@@ -263,7 +268,8 @@ function showDashboard() {
     rtn: document.querySelector("li[onclick*='dep_rtn_dashboard']"),
     ltv: document.querySelector("li[onclick*='general_ltv_dashboard']"),
     ltvrtn: document.querySelector("li[onclick*='general_ltvrtn_dashboard']"),
-    com: document.querySelector("li[onclick*='comisiones_dashboard']")
+    com: document.querySelector("li[onclick*='comisiones_dashboard']"),
+    std: document.querySelector("li[onclick*='std_dashboard']")
   };
 
   Object.values(menu).forEach(li => li.style.display = "none");
@@ -347,6 +353,7 @@ window.addEventListener("message",e=>{
   </script>
 </body>
 </html>
+
 
 
 
