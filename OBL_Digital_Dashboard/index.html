@@ -271,12 +271,8 @@
       document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
 
       if (role === "ftd") { sections.ftd.style.display = "block"; document.getElementById("dep_ftd_dashboard").classList.add("active"); }
-        if (role === "ftd") { sections.ltv.style.display = "block"; document.getElementById("general_ltv_dashboard").classList.add("active"); }
       else if (role === "rtn") { sections.rtn.style.display = "block"; document.getElementById("dep_rtn_dashboard").classList.add("active"); }
-        else if (role === "rtn") { sections.ltv.style.display = "block"; document.getElementById("general_ltv_dashboard").classList.add("active"); }
-          else if (role === "rtn") { sections.ltvrtn.style.display = "block"; document.getElementById("general_ltvrtn_dashboard").classList.add("active"); }
       else if (role === "ltv") { sections.ltv.style.display = "block"; document.getElementById("general_ltv_dashboard").classList.add("active"); }
-        else if (role === "ltv") { sections.ltvrtn.style.display = "block"; document.getElementById("general_ltvrtn_dashboard").classList.add("active"); }
       else if (role === "com") { sections.com.style.display = "block"; document.getElementById("comisiones_dashboard").classList.add("active"); }
       else { Object.values(sections).forEach(i => i.style.display = "block"); document.getElementById("dep_ftd_dashboard").classList.add("active"); }
     }
@@ -334,6 +330,7 @@
   </script>
 </body>
 </html>
+
 
 
 
