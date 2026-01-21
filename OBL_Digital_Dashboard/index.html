@@ -181,6 +181,7 @@
         <li onclick="mostrarSeccion('dep_ftd_dashboard')">📊 DEP FTD Dashboard</li>
         <li onclick="mostrarSeccion('dep_rtn_dashboard')">📈 DEP RTN Dashboard</li>
         <li onclick="mostrarSeccion('general_ltv_dashboard')">💹 GENERAL LTV Dashboard</li>
+        <li onclick="mostrarSeccion('general_ltvrtn_dashboard')">💹 RTN LTV Dashboard</li>
         <li onclick="mostrarSeccion('comisiones_dashboard')">💰 COMISIONES Dashboard</li>
       </ul>
     </div>
@@ -201,6 +202,10 @@
 
       <section id="general_ltv_dashboard">
         <iframe src="https://obldigital-dashboard-3.onrender.com/"></iframe>
+      </section>
+
+      <section id="general_ltvrtn_dashboard">
+        <iframe src="https://obldigitalltv-pt-2.onrender.com/"></iframe>
       </section>
 
       <section id="comisiones_dashboard">
@@ -258,15 +263,16 @@
         ftd: document.querySelector("li[onclick*='dep_ftd_dashboard']"),
         rtn: document.querySelector("li[onclick*='dep_rtn_dashboard']"),
         ltv: document.querySelector("li[onclick*='general_ltv_dashboard']"),
+        ltvrtn: document.querySelector("li[onclick*='general_ltvrtn_dashboard']"),
         com: document.querySelector("li[onclick*='comisiones_dashboard']")
       };
 
       Object.values(sections).forEach(i => i.style.display = "none");
       document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
 
-      if (role === "ftd") { sections.ftd.style.display = "block"; document.getElementById("dep_ftd_dashboard").classList.add("active"); }
-      else if (role === "rtn") { sections.rtn.style.display = "block"; document.getElementById("dep_rtn_dashboard").classList.add("active"); }
-      else if (role === "ltv") { sections.ltv.style.display = "block"; document.getElementById("general_ltv_dashboard").classList.add("active"); }
+      if (role === "ftd") { sections.ftd.style.display = "block"; document.getElementById("dep_ftd_dashboard").classList.add("active"); document.getElementById("general_ltv_dashboard").classList.add("active"); }
+      else if (role === "rtn") { sections.rtn.style.display = "block"; document.getElementById("dep_rtn_dashboard").classList.add("active"); document.getElementById("general_ltv_dashboard").classList.add("active"); document.getElementById("general_ltvrtn_dashboard").classList.add("active"); }
+      else if (role === "ltv") { sections.ltv.style.display = "block"; document.getElementById("general_ltv_dashboard").classList.add("active"); document.getElementById("general_ltvrtn_dashboard").classList.add("active"); }
       else if (role === "com") { sections.com.style.display = "block"; document.getElementById("comisiones_dashboard").classList.add("active"); }
       else { Object.values(sections).forEach(i => i.style.display = "block"); document.getElementById("dep_ftd_dashboard").classList.add("active"); }
     }
@@ -324,4 +330,5 @@
   </script>
 </body>
 </html>
+
 
